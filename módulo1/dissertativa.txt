@@ -1,0 +1,18 @@
+Truque da Tabuada do 9:
+
+Para multiplicar um número n (de 1 a 10) por 9 sem fazer a multiplicação direta, usa-se um truque com dois passos
+
+1.Calcular os dígitos do resultado:  
+   - Dezena = n - 1 
+   - Unidade = 10 - n
+
+2.Montar o resultado final:  
+   - Resultado = (n - 1) * 10 + (10 - n)
+
+Exemplo:  
+Para n = 6:  
+→ Dezena = 5  
+→ Unidade = 4  
+→ Resultado = 5 * 10 + 4 = 54  
+Logo, 9 x 6 = 54.
+
