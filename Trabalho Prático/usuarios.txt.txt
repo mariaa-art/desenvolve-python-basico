@@ -1,0 +1,4 @@
+admin,000,admin
+camila,999,cliente
+vivi,456,cliente
+novo,999,cliente

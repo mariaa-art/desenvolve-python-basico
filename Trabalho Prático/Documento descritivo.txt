@@ -1,0 +1,82 @@
+# Documento Descritivo - Sistema de Gerenciamento da Livraria Dev
+
+## Introdução
+
+Este documento descreve o sistema de gerenciamento desenvolvido para a **Livraria Dev**, uma empresa fictícia especializada na venda de livros. O sistema foi projetado para ser utilizado por dois tipos de usuários, cada um com diferentes níveis de acesso e funcionalidades, e para gerenciar o inventário de produtos da loja (livros).
+
+### Tipos de Usuário
+
+1.  **Gerente:** Possui acesso total ao sistema. É responsável por gerenciar tanto o cadastro de outros usuários (funcionários e outros gerentes) quanto o catálogo completo de livros, incluindo adição, atualização e remoção de produtos.
+2.  **Funcionário:** Possui acesso limitado, focado nas operações do dia a dia. Pode consultar o catálogo de livros (listar e buscar) para atender clientes e pode gerenciar sua própria conta (alterar senha).
+
+### Produtos e Serviços
+
+A empresa oferece a venda de livros físicos. O sistema gerencia o cadastro desses livros, incluindo informações essenciais como título, autor, ano de publicação, preço e a quantidade disponível em estoque.
+
+---
+
+## Implementação
+
+O sistema foi implementado em um único script Python (`main.py`) e utiliza dois arquivos CSV para persistência de dados: `usuarios.csv` e `produtos.csv`.
+
+### 1. Gerenciamento de Usuários
+
+#### Estrutura de Dados em Memória
+As informações dos usuários, lidas do arquivo `usuarios.csv`, são carregadas em um **dicionário** Python.
+-   **Chave:** O `login` (string) do usuário, garantindo acesso rápido e unicidade.
+-   **Valor:** Uma **tupla nomeada** (`namedtuple`) chamada `Usuario`, com os campos `login`, `senha` e `tipo`. A `namedtuple` foi escolhida por ser imutável e por permitir o acesso aos campos por nome (ex: `usuario.tipo`), tornando o código mais legível.
+
+#### Estrutura do Arquivo (`usuarios.csv`)
+O arquivo é um CSV simples, sem cabeçalho, onde cada linha representa um usuário e as colunas são separadas por vírgula:
+`login,senha,tipo`
+
+Exemplo: `gerente,admin123,gerente`
+
+#### Funcionalidades (CRUD)
+
+-   **Create:** `cadastrar_usuario()` - Adiciona um novo usuário ao sistema e ao arquivo `usuarios.csv`. Um gerente pode criar tanto outros gerentes quanto funcionários. Um visitante pode se cadastrar apenas como funcionário.
+-   **Read:**
+    -   `ler_usuarios()` - Carrega todos os usuários do arquivo para o dicionário em memória.
+    -   `fazer_login()` - Valida as credenciais de um usuário contra os dados carregados, permitindo o acesso ao sistema.
+-   **Update:** `atualiza_senha()` - Permite a alteração da senha. Gerentes podem alterar a senha de qualquer usuário, enquanto funcionários só podem alterar a própria.
+-   **Delete:** `excluir_usuario()` - Remove um usuário do sistema. Esta funcionalidade é restrita a gerentes.
+
+### 2. Gerenciamento de Produtos (Livros)
+
+#### Estrutura de Dados em Memória
+Similarmente aos usuários, os livros lidos do arquivo `produtos.csv` são carregados em um **dicionário**.
+-   **Chave:** O `ID` (string) do livro, um identificador único.
+-   **Valor:** Uma **tupla nomeada** (`namedtuple`) chamada `Livro`, com os campos `id`, `titulo`, `autor`, `ano`, `preco` e `quantidade`.
+
+#### Estrutura do Arquivo (`produtos.csv`)
+O arquivo CSV armazena os dados dos livros, com cada linha representando um livro:
+`id,titulo,autor,ano,preco,quantidade`
+
+Exemplo: `101,O Guia do Mochileiro das Galaxias,Douglas Adams,1979,42.00,15`
+
+#### Funcionalidades (CRUD)
+
+-   **Create:** `cadastrar_livro()` - Permite que um gerente adicione um novo livro ao catálogo.
+-   **Read:**
+    -   `ler_produtos()` - Carrega todos os livros do arquivo para o dicionário.
+    -   `listar_produtos(produtos, chave_ordenacao)` - Exibe uma tabela com todos os livros. Esta função cumpre duas especificações obrigatórias, pois pode ordenar a lista por **título** ou por **preço**, dependendo do parâmetro `chave_ordenacao`.
+    -   `buscar_livro(produtos)` - Permite a busca e exibição dos detalhes de um livro específico a partir de seu **ID**.
+-   **Update:** `atualizar_livro()` - Permite que um gerente edite as informações de um livro existente.
+-   **Delete:** `excluir_livro()` - Permite que um gerente remova um livro do catálogo.
+
+---
+
+## Conclusão
+
+O desenvolvimento deste projeto foi uma excelente oportunidade para aplicar de forma integrada os conceitos fundamentais de programação em Python, desde estruturas de dados até manipulação de arquivos e controle de fluxo.
+
+**Escolhas Bem-sucedidas:**
+-   O uso da biblioteca `rich` se provou uma ótima escolha, pois melhorou drasticamente a usabilidade e a aparência da interface de linha de comando com um esforço mínimo de implementação.
+-   A utilização de `namedtuple` para representar `Usuario` e `Livro` tornou o código mais limpo e menos propenso a erros, ao permitir o acesso a dados por nome em vez de índices numéricos.
+
+**Dificuldades Encontradas:**
+-   A principal dificuldade reside na forma de atualização e exclusão de dados em arquivos CSV. Como arquivos de texto não permitem a remoção ou edição de uma linha "no lugar", a abordagem necessária foi reescrever o arquivo inteiro a cada operação de `Update` ou `Delete`. Para um sistema com um grande volume de dados, essa abordagem não seria eficiente.
+
+**O que Faria Diferente:**
+-   Para um projeto futuro ou uma evolução deste, a próxima etapa natural seria substituir o armazenamento em arquivos CSV por um banco de dados simples, como o SQLite. Isso eliminaria a necessidade de reescrever arquivos inteiros, melhoraria a performance e permitiria consultas mais complexas de forma mais robusta e segura.
+-   Também dividiria o código em múltiplos arquivos (módulos), por exemplo, um para funções de usuário, um para funções de produto e o `main.py` apenas para o fluxo principal, melhorando a organização e a manutenibilidade do projeto.
